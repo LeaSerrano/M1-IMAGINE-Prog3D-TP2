@@ -82,16 +82,28 @@ struct TriangleVArray {
         // glBindBuffer(...);
         // glBufferData(...);
 
+        glGenBuffers(1, &vertexbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), &g_vertex_buffer_data, GL_STATIC_DRAW);
+
         // Creer un deuxieme buffer contenant les couleurs
         // a mettre dans le layout 1
         // Utiliser
         // glGenBuffers(...);
         // glBindBuffer(...);
         // glBufferData(...);
+
+        glGenBuffers(1, &colorbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), &g_color_buffer_data, GL_STATIC_DRAW);
+    
     }
 
     void clearBuffers(){
         //Liberer la memoire, utiliser glDeleteBuffers
+
+        glDeleteBuffers(1, &vertexbuffer); 
+        glDeleteBuffers(1, &colorbuffer);
 
     }
 
@@ -99,16 +111,25 @@ struct TriangleVArray {
         // 1rst attribute buffer : vertices
         //A faire
         //Utiliser glVertexAttribPointer
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);//permet de dire quel buffer on va manipuler
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);//stride = combien il y a de bits qui séparent 2 positions (en gros la taille d'une composante)
+        glEnableVertexAttribArray(0);
 
         //Ajouter un attribut dans un color buffer à envoyé au GPU
         //Utiliser glVertexAttribPointer
         // 2nd attribute buffer : normals
+        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
 
 
         // Draw the triangle !
         // Utiliser glDrawArrays
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         //Pensez à desactive les AttributArray
+
+        glUniform1f(glGetUniformLocation(programID, "scale"), scale);
     }
 };
 
@@ -140,8 +161,6 @@ struct Mesh {
     }
 
     void initBuffers(){
-
-
 
         // Creer un premier buffer contenant les positions
         // a mettre dans le layout 0
@@ -356,6 +375,7 @@ void init () {
     display_loaded_mesh = true;
 
     scale = 1.;
+
     translate = Vec3(0.,0.,0.);
     // Initialize GLEW
     glewExperimental = true; // Needed for core profile
@@ -471,26 +491,38 @@ void key (unsigned char keyPressed, int x, int y) {
 
     case '+': //Press + key to increase scale
         //Completer augmenter la valeur de la variable scale e.g. +0.005
+        scale += 0.005;
+        glUniform1f(glGetUniformLocation(programID, "scale"), scale);
         break;
 
     case '-': //Press - key to decrease scale
         //Completer
+        scale -= 0.005;
+        glUniform1f(glGetUniformLocation(programID, "scale"), scale);
         break;
 
     case 'd': //Press d key to translate on x positive
         //Completer : mettre à jour le x du Vec3 translate
+        translate += Vec3(0.5, 0, 0);
+        glUniform3f(glGetUniformLocation(programID, "translation"), translate[0], translate[1], translate[2]);
         break;
 
     case 'q': //Press q key to translate on x negative
         //Completer : mettre à jour le y du Vec3 translate
+        translate += Vec3(-0.5, 0, 0);
+        glUniform3f(glGetUniformLocation(programID, "translation"), translate[0], translate[1], translate[2]);
         break;
 
     case 'z': //Press z key to translate on y positive
         //Completer : mettre à jour le y du Vec3 translate
+        translate += Vec3(0, 0.5, 0);
+        glUniform3f(glGetUniformLocation(programID, "translation"), translate[0], translate[1], translate[2]);
         break;
 
     case 's': //Press s key to translate on y negative
         //Completer : mettre à jour le y du Vec3 translate
+        translate += Vec3(0, -0.5, 0);
+        glUniform3f(glGetUniformLocation(programID, "translation"), translate[0], translate[1], translate[2]);
         break;
 
     case '1': //Toggle loaded mesh display
