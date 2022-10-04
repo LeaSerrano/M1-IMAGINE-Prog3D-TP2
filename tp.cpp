@@ -169,6 +169,10 @@ struct Mesh {
         // glBindBuffer(...);
         // glBufferData(...);
 
+        glGenBuffers(1, &vertexbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+
         // Creer un deuxieme buffer contenant les couleurs
         // a mettre dans le layout 1
         // Utiliser
@@ -177,8 +181,23 @@ struct Mesh {
         // glBufferData(...);
         // Piste : utiliser sizeof(Vec3)
 
+        /*glGenBuffers(1, &colorbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals, GL_STATIC_DRAW);*/
+    
+
         //Remplir indices avec la liste des indices des triangles concatenes
         std::vector<unsigned int> indices;
+
+        /*for (int i = 0; i < triangles.size(); i++) {
+            for (int j = 0; j < 3; j++) {
+                indices.push_back(triangles[i][j]);
+            }
+        }*/
+
+        indices.push_back(0);
+        indices.push_back(1);
+        indices.push_back(2);
 
         // Creer un element buffer contenant les indices des sommets
         // Utiliser
@@ -186,11 +205,18 @@ struct Mesh {
         // glBindBuffer(...);
         // glBufferData(...);
 
+        glGenBuffers(1, &elementbuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
 
     }
 
     void clearBuffers(){
         //Liberer la memoire, utiliser glDeleteBuffers
+
+        glDeleteBuffers(1, &vertexbuffer); 
+        //glDeleteBuffers(1, &colorbuffer);
+        glDeleteBuffers(1, &elementbuffer);
     }
 
     void draw (){
@@ -198,15 +224,26 @@ struct Mesh {
         //A faire
         //Utiliser glVertexAttribPointer
 
-        //Ajouter un attribut dans un color buffer à envoyé au GPU
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        //Ajouter un attribut dans un color buffer à envoyer au GPU
         //Utiliser glVertexAttribPointer
         // 2nd attribute buffer : normals
 
+        /*glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);*/
 
         // Draw the triangles !
         // Utiliser l'index buffer
         // glBindBuffer
         // glDrawElements
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+        //glEnableVertexAttribArray(2);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
         //Pensez à desactive les AttributArray
 
@@ -429,7 +466,7 @@ void draw () {
     // Ajouter une translation en envoyant un vec3
 
     //Dessin du premier triangle
-    first_triangle.draw();
+    //first_triangle.draw();
 
     //Definir une translation entre les 2 si vous le souhaitez
 
