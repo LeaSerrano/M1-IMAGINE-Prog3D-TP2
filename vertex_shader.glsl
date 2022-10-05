@@ -18,12 +18,15 @@ layout(location = 0) in vec3 vertexPosition_modelspace;
 //------
 layout(location = 1) in vec3 normals_color;
 
+layout(location = 2) in vec3 vertexPosition_maillage;
+
 void main(){
 
     //Mettre à jour ce code pour appliquer la translation et la mise à l'échelle
     //gl_Position =  vec4(vertexPosition_modelspace,1);
 
     gl_Position = vec4(vertexPosition_modelspace * scale + translation, 1);
+    //gl_Position = vec4(vertexPosition_maillage, 1);
 
     //Assigner la normale à la variable interpolée color
     //ajouter ici

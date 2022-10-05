@@ -181,23 +181,19 @@ struct Mesh {
         // glBufferData(...);
         // Piste : utiliser sizeof(Vec3)
 
-        /*glGenBuffers(1, &colorbuffer);
+        glGenBuffers(1, &colorbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals, GL_STATIC_DRAW);*/
+        glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals, GL_STATIC_DRAW);
     
 
         //Remplir indices avec la liste des indices des triangles concatenes
         std::vector<unsigned int> indices;
 
-        /*for (int i = 0; i < triangles.size(); i++) {
+        for (int i = 0; i < triangles.size(); i++) {
             for (int j = 0; j < 3; j++) {
                 indices.push_back(triangles[i][j]);
             }
-        }*/
-
-        indices.push_back(0);
-        indices.push_back(1);
-        indices.push_back(2);
+        }
 
         // Creer un element buffer contenant les indices des sommets
         // Utiliser
@@ -208,6 +204,7 @@ struct Mesh {
         glGenBuffers(1, &elementbuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
+        
 
     }
 
@@ -215,7 +212,7 @@ struct Mesh {
         //Liberer la memoire, utiliser glDeleteBuffers
 
         glDeleteBuffers(1, &vertexbuffer); 
-        //glDeleteBuffers(1, &colorbuffer);
+        glDeleteBuffers(1, &colorbuffer);
         glDeleteBuffers(1, &elementbuffer);
     }
 
@@ -225,16 +222,16 @@ struct Mesh {
         //Utiliser glVertexAttribPointer
 
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
         //Ajouter un attribut dans un color buffer à envoyer au GPU
         //Utiliser glVertexAttribPointer
         // 2nd attribute buffer : normals
 
-        /*glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);*/
+        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
 
         // Draw the triangles !
         // Utiliser l'index buffer
@@ -242,9 +239,8 @@ struct Mesh {
         // glDrawElements
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-        //glEnableVertexAttribArray(2);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-
+        glEnableVertexAttribArray(4);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)0);
         //Pensez à desactive les AttributArray
 
     }
@@ -466,7 +462,7 @@ void draw () {
     // Ajouter une translation en envoyant un vec3
 
     //Dessin du premier triangle
-    //first_triangle.draw();
+    first_triangle.draw();
 
     //Definir une translation entre les 2 si vous le souhaitez
 
