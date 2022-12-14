@@ -144,14 +144,14 @@ struct Mesh {
     void initTriangleMesh(){
         std::vector<Vec3> g_vertex_buffer_data {
             Vec3(-1.0f, -1.0f, 0.0f),
-                    Vec3(1.0f, -1.0f, 0.0f),
-                    Vec3(1.0f,  1.0f, 0.0f),
+            Vec3(1.0f, -1.0f, 0.0f),
+            Vec3(1.0f,  1.0f, 0.0f),
         };
 
         std::vector<Vec3> g_color_buffer_data {
             Vec3(1.0f, 0.0f, 0.0f),
-                    Vec3(0.0f, 1.0f, 0.0f),
-                    Vec3(0.0f, 0.0f, 1.0f),
+            Vec3(0.0f, 1.0f, 0.0f),
+            Vec3(0.0f, 0.0f, 1.0f),
         };
 
         vertices = g_vertex_buffer_data;
@@ -171,7 +171,7 @@ struct Mesh {
 
         glGenBuffers(1, &vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0])*vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
         // Creer un deuxieme buffer contenant les couleurs
         // a mettre dans le layout 1
@@ -183,7 +183,7 @@ struct Mesh {
 
         glGenBuffers(1, &colorbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(normals[0])*normals.size(), &normals[0], GL_STATIC_DRAW);
     
 
         //Remplir indices avec la liste des indices des triangles concatenes
@@ -223,7 +223,7 @@ struct Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(2);
 
         //Ajouter un attribut dans un color buffer à envoyer au GPU
         //Utiliser glVertexAttribPointer
@@ -231,7 +231,7 @@ struct Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(3);
 
         // Draw the triangles !
         // Utiliser l'index buffer
@@ -239,7 +239,7 @@ struct Mesh {
         // glDrawElements
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-        glEnableVertexAttribArray(4);
+        //glEnableVertexAttribArray(4);
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)0);
         //Pensez à desactive les AttributArray
 
